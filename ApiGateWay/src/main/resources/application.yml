@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: API-GATEWAY
+    # MVC
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/auth/**, /user/**, /api/users/**,/auth/signin
+
+
+        - id: TASK-SERVICE
+          uri: lb://TASK-SERVICE
+          predicates:
+            - Path=/api/tasks/**, /tasks/**
+
+
+        - id: SUBMISSION-SERVICE
+          uri: lb://SUBMISSION-SERVICE
+          predicates:
+            - Path=/api/submissions/**, /submissions/**
+      default-filters:
+        - StripPrefix=1
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            - allowed-origins: '*'
+              allowed-methods: '*'
+              allowed-headers: '*'
+              exposed-headers: Authorization
+              allow-credentials: true
+              max-age: 4800
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+server:
+  port: 8080
+
+
